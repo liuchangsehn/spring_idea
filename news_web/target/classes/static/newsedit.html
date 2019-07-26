@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript">
+        var formatDate = function (date) {
+            var date = new Date(date);
+            var y = date.getFullYear();
+            var m = date.getMonth() + 1;
+            m = m < 10 ? ('0' + m) : m;
+            var d = date.getDate();
+            d = d < 10 ? ('0' + d) : d;
+            // var h = date.getHours();
+            // var minute = date.getMinutes();
+            // minute = minute < 10 ? ('0' + minute) : minute;
+            // var second = date.getSeconds();
+            // second = minute < 10 ? ('0' + second) : second;
+            return y + '-' + m + '-' + d;
+            // + ' ' + h + ':' + minute + ':' + second;
+        };
+        $(function () {
+            // 自定义jquery的方法，将Form表单中的内容转换成json
+            $.fn.serializeJson = function () {
+                var serializeObj = {};
+                var array = this.serializeArray();
+                var str = this.serialize();
+                $(array).each(function () {
+                    if (serializeObj[this.name]) {
+                        if ($.isArray(serializeObj[this.name])) {
+                            serializeObj[this.name].push(this.value);
+                        } else {
+                            serializeObj[this.name] = [serializeObj[this.name], this.value];
+                        }
+                    } else {
+                        serializeObj[this.name] = this.value;
+                    }
+                });
+                return serializeObj;
+            };
+            //获取id
+            var a = location.search
+            var b = location.search.split("=")
+            var c = location.search.split("=")[1]
+
+            var id = parseInt(location.search.split("=")[1]);
+
+            $.ajax({
+                url: "news/" + id,
+                type: "get",
+                dataType: "json",
+                success: function (data) {
+                   $("#id").val(data.id)
+                   $("#title").val(data.title)
+                   $("#content").val(data.content)
+                   $("#author").val(data.author)
+                   $("#publishtime").val(formatDate(data.publishtime))
+                }
+            })
+
+        })
+        function mySubmit() {
+            var params =$("#newedit").serializeJson();
+            $.ajax({
+                url:"news",
+                type:"put",
+                data:params,
+                dataType:"json",
+                statusCode:{
+                    204:function () {
+                        alert("修改成功")
+                        location.href="newslist.html";
+                    },
+                    500:function () {
+                        alert("修改失败")
+                    }
+                }
+
+            })
+
+        }
+    </script>
+</head>
+<body>
+修改页面<br>
+<form id="newedit" name="newedit">
+    <input type="hidden" name="id" id="id">
+    标题:<input type="text" name="title" id="title"><br>
+    内容:<input type="text" name="content" id="content"><br>
+    作者:<input type="text" name="author" id="author"><br>
+    时间:<input type="date" name="publishtime" id="publishtime"><br>
+    <input type="button" value="提交" onclick="mySubmit()">
+</form>
+</body>
+</html>
