@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript">
+        var formatDate = function (date) {
+            var date = new Date(date);
+            var y = date.getFullYear();
+            var m = date.getMonth() + 1;
+            m = m < 10 ? ('0' + m) : m;
+            var d = date.getDate();
+            d = d < 10 ? ('0' + d) : d;
+            // var h = date.getHours();
+            // var minute = date.getMinutes();
+            // minute = minute < 10 ? ('0' + minute) : minute;
+            // var second = date.getSeconds();
+            // second = minute < 10 ? ('0' + second) : second;
+            return y + '-' + m + '-' + d;
+                // + ' ' + h + ':' + minute + ':' + second;
+
+        };
+        $(function () {
+            $.ajax({
+                url:"news",
+                type:"get",
+                dataType:"json",
+                success:function (data) {
+                    $.each(data,function (index, ele) {
+$("#newsList").append("<tr>" +
+    "<td>"+ele.id+"</td>" +
+    "<td>"+ele.title+"</td>" +
+    "<td>"+ele.content+"</td>" +
+    "<td>"+formatDate(ele.publishtime)+"</td>" +
+    "<td>"+ele.author+"</td>" +
+    "<td><a href='newsadd.html'>添加</a><a href='newsedit.html?id="+ele.id+"'>修改</a><a href='javascript:mydelete("+ele.id+")'>删除</a> </td>" +
+    "</tr>")
+                    })
+                }
+            })
+        })
+        //删除点击事件
+        function mydelete(id){
+
+            $.ajax({
+                url:"news/"+id,
+                type:"delete",
+                dataType:"json",
+                success:function () {
+                    location.href="newslist.html";
+                }
+            })
+        }
+    </script>
+</head>
+<body>
+新闻列表<br>
+<table border="1" id="newsList">
+    <tr>
+        <td>ID</td>
+        <td>标题</td>
+        <td>内容</td>
+        <td>发表时间</td>
+        <td>作者</td>
+        <td>操作</td>
+    </tr>
+</table>
+
+</body>
+</html>
