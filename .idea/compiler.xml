@@ -8,8 +8,8 @@
         <outputRelativeToContentRoot value="true" />
         <module name="news_dao" />
         <module name="news_service" />
-        <module name="news_domain" />
         <module name="news_web" />
+        <module name="news_domain" />
       </profile>
     </annotationProcessing>
   </component>
